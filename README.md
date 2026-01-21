@@ -27,11 +27,41 @@ copilot_collaginator/
 │       ├── style.css           # Styles
 │       └── app.js              # Frontend logic
 ├── .env                        # Environment variables
+├── Dockerfile                  # Docker configuration
+├── start.bat                   # Windows startup script
+├── start.sh                    # Unix/Linux/Mac startup script
 ├── package.json                # Dependencies
 └── README.md                   # This file
 ```
 
 ## Setup
+
+### Option 1: Docker (Recommended)
+
+The easiest way to run the application is using the provided startup scripts:
+
+**Windows:**
+```bash
+start.bat
+```
+
+**Unix/Linux/Mac:**
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+These scripts will automatically:
+- Build the Docker image
+- Run the container with the application on port 3000
+
+**Manual Docker Commands:**
+```bash
+docker build -t copilot-collaginator .
+docker run -p 3000:3000 copilot-collaginator
+```
+
+### Option 2: Local Installation
 
 1. **Install Dependencies**
 
@@ -48,7 +78,7 @@ The `.env` file must contain the following configuration:
 Example `.env` file:
 ```
 PORT=3000
-API_ENDPOINT=https://afoyu5tqu4.execute-api.us-east-1.amazonaws.com/yvonne/random
+API_ENDPOINT=<your-api-endpoint-url>
 ```
 
 3. **Start the Server**
@@ -62,7 +92,7 @@ For development with auto-reload:
 npm run dev
 ```
 
-4. **Open in Browser**
+### Access the Application
 
 Navigate to `http://localhost:3000` to view the collage.
 
@@ -89,8 +119,8 @@ The application fetches images from an external API.
 Response format:
 ```json
 {
-  "link": "http://mytrapster.yvonneshow.xyz/20180307020357.png",
-  "thumb": "http://mytrapster.yvonneshow.xyz/th_20180307020357.png"
+  "link": "<url-to-full-image>",
+  "thumb": "<url-to-thumbnail-image>"
 }
 ```
 
@@ -98,13 +128,11 @@ Response format:
 
 - **Backend**: Node.js, Express, Axios
 - **Frontend**: HTML5, CSS3, jQuery, Canvas API
-- **Environment**: dotenv for configuration
-
-## UPDATE LOG
-
+- **Deployment**: Docker
 
 ## Update Log
 
+* **2026-01-20**: Added Docker support with Dockerfile and startup scripts (start.bat, start.sh) for easy deployment.
 * **2026-01-18**: Updated README to include About section with GitHub Copilot disclaimer, removed specific API URL, and added Update Log section.
-* **2026-01-18**: Initial project setup with backend server, frontend collage application, and documentation.
 * **2026-01-18**: Updated environment variable handling to require PORT and API_ENDPOINT in .env file with validation. Updated .gitignore to include package-lock.json and dist/ directory.
+* **2026-01-18**: Initial project setup with backend server, frontend collage application, and documentation.

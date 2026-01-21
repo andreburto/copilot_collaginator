@@ -12,6 +12,11 @@ This document contains coding instructions and guidelines for the Copilot Collag
 - `.gitignore`: See .github/instructions/gitignore.instructions.md for detailed instructions.
 - `package.json`: Contains project dependencies and scripts.
 - `README.md`: This file is for project overview and setup instructions. See: .github/instructions/readme.instructions.md for detailed instructions.
+- `Dockerfile`: Configuration for containerizing the application. See: .github/instructions/dockerfile.instructions.md for detailed instructions.
+- Start up scripts that run `docker build` and `docker run` commands:
+  - `start.bat`: Windows batch script to start the server.
+  - `start.sh`: Shell script to start the server on Unix-based systems.
+  - Each script builds the Docker image and runs the container, mapping port 3000.
 
 ## Instructions
 
