@@ -23,6 +23,22 @@ app.use(express.json());
 // Serve static files from frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+/**
+ * GET /list
+ * Serves the list.html page
+ */
+app.get('/list', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/list.html'));
+});
+
+/**
+ * GET /collage
+ * Serves the collage.html page
+ */
+app.get('/collage', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/collage.html'));
+});
+
 // Initialize database
 let db;
 const initDatabase = () => {
@@ -109,7 +125,7 @@ app.get('/api/collage', (req, res) => {
   }
   
   // Get collage info
-  db.get('SELECT * FROM collage WHERE id = ?', [collage_id], (err, collage) => {
+  db.get('SELECT * FROM collages WHERE id = ?', [collage_id], (err, collage) => {
     if (err) {
       console.error(`[${timestamp}] Database error:`, err.message);
       return res.status(500).json({ error: 'Database error' });
@@ -120,7 +136,7 @@ app.get('/api/collage', (req, res) => {
     }
     
     // Get all images for this collage
-    db.all('SELECT * FROM image WHERE collage_id = ? ORDER BY date_created', [collage_id], (err, images) => {
+    db.all('SELECT * FROM collage_images WHERE collage_id = ? ORDER BY date_created', [collage_id], (err, images) => {
       if (err) {
         console.error(`[${timestamp}] Database error:`, err.message);
         return res.status(500).json({ error: 'Database error' });
@@ -159,7 +175,7 @@ app.post('/api/collage', (req, res) => {
   }
   
   // Check if collage exists, if not create it
-  db.get('SELECT id FROM collage WHERE id = ?', [collage_id], (err, row) => {
+  db.get('SELECT id FROM collages WHERE id = ?', [collage_id], (err, row) => {
     if (err) {
       console.error(`[${timestamp}] Database error:`, err.message);
       return res.status(500).json({ error: 'Database error' });
@@ -171,7 +187,7 @@ app.post('/api/collage', (req, res) => {
       const positionStr = JSON.stringify(position);
       
       db.run(
-        'INSERT INTO image (id, collage_id, image_url, position, rotation, date_created) VALUES (?, ?, ?, ?, ?, ?)',
+        'INSERT INTO collage_images (id, collage_id, image_url, position, rotation, date_created) VALUES (?, ?, ?, ?, ?, ?)',
         [imageId, collage_id, image_url, positionStr, rotation, now],
         function(err) {
           if (err) {
@@ -193,7 +209,7 @@ app.post('/api/collage', (req, res) => {
       // Create new collage
       const now = new Date().toISOString();
       db.run(
-        'INSERT INTO collage (id, date_created) VALUES (?, ?)',
+        'INSERT INTO collages (id, date_created) VALUES (?, ?)',
         [collage_id, now],
         function(err) {
           if (err) {
@@ -208,6 +224,51 @@ app.post('/api/collage', (req, res) => {
     } else {
       saveImage();
     }
+  });
+});
+
+/**
+ * GET /api/collage/list
+ * Returns a list of all collages
+ */
+app.get('/api/collage/list', (req, res) => {
+  const timestamp = new Date().toISOString();
+  
+  db.all('SELECT id, date_created FROM collages ORDER BY date_created DESC', [], (err, collages) => {
+    if (err) {
+      console.error(`[${timestamp}] Database error:`, err.message);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    console.log(`[${timestamp}] Retrieved ${collages.length} collages`);
+    res.json(collages);
+  });
+});
+
+/**
+ * GET /api/collage/:collage_id/images
+ * Returns all images for a specific collage
+ */
+app.get('/api/collage/:collage_id/images', (req, res) => {
+  const timestamp = new Date().toISOString();
+  const { collage_id } = req.params;
+  
+  db.all('SELECT * FROM collage_images WHERE collage_id = ? ORDER BY date_created', [collage_id], (err, images) => {
+    if (err) {
+      console.error(`[${timestamp}] Database error:`, err.message);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    
+    // Parse position strings back to objects
+    const parsedImages = images.map(img => ({
+      id: img.id,
+      image_url: img.image_url,
+      position: img.position,
+      rotation: img.rotation
+    }));
+    
+    console.log(`[${timestamp}] Retrieved ${parsedImages.length} images for collage ${collage_id}`);
+    res.json(parsedImages);
   });
 });
 

@@ -11,6 +11,18 @@ When the server starts up, it listens on a port defined in the environment varia
 
 # External API Interaction
 
+## GET: /
+
+This is the root endpoint of the backend server. It serves THE `index.html` file located in the `src/frontend/` directory. This file contains the frontend application that interacts with the backend server.
+
+## GET: /list
+
+This endpoint returns the `list.html` file located in the `src/frontend/` directory. This file displays a list of existing collages stored in the SQLite database.
+
+## GET: /collage
+
+This endpoint returns the `collage.html` file located in the `src/frontend/` directory. This file displays a specific collage based on the `collage_id` query parameter.
+
 ## GET: /api/image
 
 The endpoint URL is definhed in the environment variable `EXTERNAL_API_URL`. This endpoint returns image data in JSON format.
@@ -93,6 +105,46 @@ CREATE TABLE collages (
   id VARCHAR PRIMARY KEY,
   date_created DATETIME NOT NULL
 );
+```
+
+## GET: /api/collage/list
+
+This endpoint returns a JSON array of all existing collages in the database. Each collage entry includes its unique `id` and `date_created` timestamp. The JSON response has the following format:
+
+```json
+[
+  {
+    "id": "collage-uuid-1234",
+    "date_created": "2024-01-01T12:00:00Z"
+  },
+  {
+    "id": "collage-uuid-5678",
+    "date_created": "2024-01-02T15:30:00Z"
+  }
+  // More collage entries can follow
+]
+```
+
+## GET: /api/collage/<collage_id>/images
+
+This endpoint retrieves all images associated with a specific collage identified by the `collage_id` parameter in the URL. It returns a JSON array of image entries, each containing its unique `id`, `image_url`, `position`, and `rotation`. The JSON response has the following format:
+
+```json
+[
+  {
+    "id": "unique-image-id-1",
+    "image_url": "http://example.com/image1.png",
+    "position": {"x": 100, "y": 150},
+    "rotation": 15
+  },
+  {
+    "id": "unique-image-id-2",
+    "image_url": "http://example.com/image2.png",
+    "position": {"x": 200, "y": 250},
+    "rotation": -10
+  }
+  // More image entries can follow
+]
 ```
 
 # Code Guidelines for Backend Server

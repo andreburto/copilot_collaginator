@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collage List - Copilot Collaginator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1a1a1a;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        th {
+            background-color: #2a2a2a;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #2a2a2a;
+        }
+        a {
+            color: #4a9eff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+        }
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #ff4444;
+            font-size: 18px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to New Collage</a>
+        <h1>Existing Collages</h1>
+        <div id="collageList">
+            <div class="loading">Loading collages...</div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Fetch list of collages
+            $.ajax({
+                url: '/api/collage/list',
+                method: 'GET',
+                dataType: 'json',
+                success: function(collages) {
+                    if (collages.length === 0) {
+                        $('#collageList').html('<div class="loading">No collages found. Create one first!</div>');
+                        return;
+                    }
+                    
+                    let tableHtml = '<table><thead><tr><th>Collage ID</th><th>Date Created</th><th>View</th></tr></thead><tbody>';
+                    
+                    collages.forEach(function(collage) {
+                        const date = new Date(collage.date_created);
+                        const formattedDate = date.toLocaleString();
+                        
+                        tableHtml += `
+                            <tr>
+                                <td>${collage.id}</td>
+                                <td>${formattedDate}</td>
+                                <td><a href="/collage?collage_id=${collage.id}" target="_blank">View Collage</a></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHtml += '</tbody></table>';
+                    $('#collageList').html(tableHtml);
+                    
+                    console.log(`Loaded ${collages.length} collages`);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching collage list:', error);
+                    $('#collageList').html('<div class="error">Error loading collages. Please try again.</div>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

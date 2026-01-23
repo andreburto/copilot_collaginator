@@ -17,10 +17,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY src/ ./src/
 COPY .env ./
+COPY init.sql ./init.sql
 
 EXPOSE 3000
 
 RUN npm install
 
-ENTRYPOINT ["sh", "-c", "source .env && npm start"]
+ENTRYPOINT ["sh", "-c", "source .env && npm run start"]
 ```

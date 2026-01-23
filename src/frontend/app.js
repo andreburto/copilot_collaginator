@@ -11,16 +11,9 @@ $(document).ready(function() {
     
     initCanvas();
     
-    // Get or create a unique collage ID for this session
-    let collageId = localStorage.getItem('collageId');
-    if (!collageId) {
-        // Generate a UUID-like ID
-        collageId = 'collage-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('collageId', collageId);
-        console.log(`New collage session created: ${collageId}`);
-    } else {
-        console.log(`Resuming collage session: ${collageId}`);
-    }
+    // Create a unique collage ID for this session (new ID on each page load)
+    const collageId = 'collage-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    console.log(`New collage session created: ${collageId}`);
     
     // Get or initialize the fetch interval from localStorage (default: 30000ms = 30 seconds)
     const DEFAULT_FETCH_INTERVAL = 30000;
@@ -84,7 +77,7 @@ $(document).ready(function() {
                     console.log(`[${timestamp}] Image added to collage at position (${Math.round(x)}, ${Math.round(y)}) with rotation ${rotationDeg}°`);
                     
                     // Save to backend with the full image URL
-                    saveToCollage(imageUrl, { x: Math.round(x), y: Math.round(y) }, rotationDeg);
+                    saveToCollage(thumbUrl, { x: Math.round(x), y: Math.round(y) }, rotationDeg);
                 };
                 
                 img.onerror = function() {
@@ -153,14 +146,7 @@ $(document).ready(function() {
      * Create a new collage session (can be called from console)
      */
     window.newCollageSession = () => {
-        collageId = 'collage-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('collageId', collageId);
-        console.log(`New collage session created: ${collageId}`);
-        
-        // Clear canvas
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        console.log('Canvas cleared');
+        console.log('Please refresh the page to start a new collage session');
     };
     
     // Fetch first image immediately
