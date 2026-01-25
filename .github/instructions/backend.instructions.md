@@ -7,7 +7,7 @@ description: Instructions for the backend server of the Copilot Collaginator pro
 
 The backend of the Copilot Collaginator project is built using Node.js. It is mostly a proxy server that handles requests from the frontend and communicates with one external API endpoint.
 
-When the server starts up, it listens on a port defined in the environment variable `PORT`, defaulting to `3000` if not set. Check to id the database file defined by the environment variable `DATABASE_FILE` exists in the project root directory. If it does not exist, create a new SQLite database file and set up the necessary tables. Defsult to `database.sqlite` if the variable is not set.
+When the server starts up, it listens on a port defined in the environment variable `PORT`, defaulting to `3000` if not set. Check to id the database file defined by the environment variable `DATABASE_FILE` exists in the project root directory. If it does not exist, create the data directory if needed, create a new SQLite database file and set up the necessary tables. Defsult to `data/database.sqlite` if the variable is not set.
 
 # External API Interaction
 
@@ -83,14 +83,14 @@ This endpoint accepts a POST request with a JSON body containing a two fields:
 - `rotation`, which is an integer representing the rotation angle of the image in degrees
 - `collage_id`, which is a UUID string that uniquely identifies the collage.
 
-The backend server will take these and insert them into a SQLite database table named `collage_images`. The table has the following schema:
+The backend server will take these and insert them into a SQLite database table named `image`. The table has the following schema:
 
 ```sql
-CREATE TABLE collage_images (
+CREATE TABLE image (
   id VARCHAR PRIMARY KEY,
   collage_id VARCHAR NOT NULL,
   image_url VARCHAR NOT NULL,
-  position INTEGER NOT NULL,
+  position VARCHAR NOT NULL,
   rotation INTEGER NOT NULL,
   date_created DATETIME NOT NULL
 );
@@ -98,10 +98,10 @@ CREATE TABLE collage_images (
 
 When a new image is added to a collage, generate a unique UUID for the `id` field and set the `date_created` field to the current date and time.
 
-Check if the `collage_id` already exists in the database. If it does not exist, create a new entry in a separate `collages` table with the following schema:
+Check if the `collage_id` already exists in the database. If it does not exist, create a new entry in a separate `collage` table with the following schema:
 
 ```sql
-CREATE TABLE collages (
+CREATE TABLE collage (
   id VARCHAR PRIMARY KEY,
   date_created DATETIME NOT NULL
 );

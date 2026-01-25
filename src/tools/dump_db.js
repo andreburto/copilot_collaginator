@@ -12,7 +12,7 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-const DATABASE_FILE = process.env.DATABASE_FILE || 'database.sqlite';
+const DATABASE_FILE = process.env.DATABASE_FILE || 'data/database.sqlite';
 const dbPath = path.join(__dirname, '../../', DATABASE_FILE);
 
 // Check if database exists

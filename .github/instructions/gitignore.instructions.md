@@ -8,7 +8,7 @@ description: Git ignore rules for the Copilot Collaginator project.
 *.log
 .DS_Store
 package-lock.json
-database.sqlite
+data/database.sqlite
 
 # Directories to ignore
 node_modules/

@@ -78,13 +78,13 @@ npm install
 The `.env` file must contain the following configuration:
 - `PORT`: Server port (default: 3000)
 - `EXTERNAL_API_URL`: External API endpoint for fetching images
-- `DATABASE_FILE`: SQLite database filename (default: database.sqlite)
+- `DATABASE_FILE`: SQLite database filename (default: data/database.sqlite)
 
 Example `.env` file:
 ```
 PORT=3000
 EXTERNAL_API_URL=<your-api-endpoint-url>
-DATABASE_FILE=database.sqlite
+DATABASE_FILE=data/database.sqlite
 ```
 
 3. **Start the Server**
@@ -147,7 +147,8 @@ Response format:
 
 ## Update Log
 
-* **2026-01-22**: Enhanced database functionality with proper table naming (collages/collage_images). Added list.html and collage.html pages for viewing saved collages. Added new backend endpoints (/list, /collage, /api/collage/list, /api/collage/:collage_id/images). Updated frontend to generate new collage session ID on each page load. Fixed Dockerfile to include init.sql file.
+* **2026-01-25**: Updated database path to data/database.sqlite for better organization. Enhanced startup scripts to check for Docker availability and mount data directory for persistence.
+* **2026-01-22**: Enhanced database functionality with proper table naming (collage/image). Added list.html and collage.html pages for viewing saved collages. Added new backend endpoints (/list, /collage, /api/collage/list, /api/collage/:collage_id/images). Updated frontend to generate new collage session ID on each page load. Fixed Dockerfile to include init.sql file.
 * **2026-01-21**: Added SQLite database integration for persistent collage storage. Added REST API endpoints for saving and retrieving collage data. Frontend now tracks collage sessions and saves image metadata to backend.
 * **2026-01-20**: Added Docker support with Dockerfile and startup scripts (start.bat, start.sh) for easy deployment.
 * **2026-01-18**: Updated README to include About section with GitHub Copilot disclaimer, removed specific API URL, and added Update Log section.
